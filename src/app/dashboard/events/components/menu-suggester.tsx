@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Event } from '@/lib/types';
 import { suggestMenu, type SuggestMenuOutput } from '@/ai/flows/suggest-menu';
 import { Button } from '@/components/ui/button';
@@ -8,8 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, FileDown } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 type MenuSuggesterProps = {
   event?: Event;
@@ -21,6 +23,7 @@ export function MenuSuggester({ event, onSuggestion }: MenuSuggesterProps) {
   const [suggestion, setSuggestion] = useState<SuggestMenuOutput | null>(event?.menu ? { menuSuggestions: event.menu.suggestions, instructionsForStaff: event.menu.staffInstructions, reachForCustomer: event.menu.customerReach } : null);
   const [guestCount, setGuestCount] = useState(event?.guests ?? 0);
   const [specialRequirements, setSpecialRequirements] = useState(event?.specialRequirements ?? '');
+  const suggestionRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     if (suggestion) {
@@ -41,6 +44,24 @@ export function MenuSuggester({ event, onSuggestion }: MenuSuggesterProps) {
       console.error('Error suggesting menu:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleExportToPdf = () => {
+    if (suggestionRef.current) {
+        html2canvas(suggestionRef.current).then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'px', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const canvasWidth = canvas.width;
+            const canvasHeight = canvas.height;
+            const ratio = canvasWidth / canvasHeight;
+            const width = pdfWidth;
+            const height = width/ratio;
+            pdf.addImage(imgData, 'PNG', 0, 0, width, height);
+            pdf.save('sugerencia-menu.pdf');
+        });
     }
   };
 
@@ -66,12 +87,21 @@ export function MenuSuggester({ event, onSuggestion }: MenuSuggesterProps) {
                 </div>
             </div>
 
-          <Button onClick={handleSuggestMenu} disabled={loading} className="w-full">
-            {loading ? 'Generando...' : 'Sugerir Menú con IA'}
-          </Button>
+            <div className="flex gap-2">
+                <Button onClick={handleSuggestMenu} disabled={loading} className="w-full">
+                    {loading ? 'Generando...' : 'Sugerir Menú con IA'}
+                </Button>
+                {suggestion && (
+                    <Button onClick={handleExportToPdf} variant="outline">
+                        <FileDown className="mr-2" />
+                        PDF
+                    </Button>
+                )}
+            </div>
+
 
           {suggestion && (
-            <div className="mt-4 space-y-4">
+            <div className="mt-4 space-y-4" ref={suggestionRef}>
                 <Accordion type="single" collapsible className="w-full" defaultValue='suggestions'>
                     <AccordionItem value="suggestions">
                         <AccordionTrigger>Sugerencias de Menú</AccordionTrigger>
