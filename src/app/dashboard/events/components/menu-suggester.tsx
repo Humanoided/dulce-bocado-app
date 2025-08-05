@@ -12,6 +12,7 @@ import { Sparkles, FileDown } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { useToast } from '@/hooks/use-toast';
 
 type MenuSuggesterProps = {
   event?: Event;
@@ -24,6 +25,7 @@ export function MenuSuggester({ event, onSuggestion }: MenuSuggesterProps) {
   const [guestCount, setGuestCount] = useState(event?.guests ?? 0);
   const [specialRequirements, setSpecialRequirements] = useState(event?.specialRequirements ?? '');
   const suggestionRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
   
   useEffect(() => {
     if (suggestion) {
@@ -42,6 +44,11 @@ export function MenuSuggester({ event, onSuggestion }: MenuSuggesterProps) {
       setSuggestion(result);
     } catch (error) {
       console.error('Error suggesting menu:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error de IA',
+        description: 'No se pudo generar la sugerencia. El modelo puede estar sobrecargado. Inténtalo de nuevo más tarde.',
+      });
     } finally {
       setLoading(false);
     }
