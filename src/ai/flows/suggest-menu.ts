@@ -26,13 +26,13 @@ export type SuggestMenuInput = z.infer<typeof SuggestMenuInputSchema>;
 const SuggestMenuOutputSchema = z.object({
   menuSuggestions: z
     .string()
-    .describe('A list of suggested menu items based on the input parameters.'),
+    .describe('Sugerencia de menú basada en los parámetros de entrada.'),
   instructionsForStaff: z
     .string()
-    .describe('Instructions for the staff based on the suggested menu.'),
+    .describe('Instrucciones para el personal basadas en la sugerencia de menú.'),
   reachForCustomer: z
     .string()
-    .describe('The reach of the service for the customer based on the suggested menu.'),
+    .describe('El alcance del servicio para el cliente basado en la sugerencia de menú.'),
 });
 export type SuggestMenuOutput = z.infer<typeof SuggestMenuOutputSchema>;
 
@@ -44,16 +44,24 @@ const suggestMenuPrompt = ai.definePrompt({
   name: 'suggestMenuPrompt',
   input: {schema: SuggestMenuInputSchema},
   output: {schema: SuggestMenuOutputSchema},
-  prompt: `You are an expert menu planner for catered events.
+  prompt: `Eres un experto en planificar menús para eventos catering.
 
-You will suggest a menu based on the number of guests and any special requirements.
+Se te proporcionará el número de invitados y cualquier requisito especial.
 
-Guest Count: {{{guestCount}}}
-Special Requirements: {{{specialRequirements}}}
+Número de Invitados: {{{guestCount}}}
+Requisitos Especiales: {{{specialRequirements}}}
 
-Based on this information, generate a menu suggestion, instructions for the staff based on the suggested menu and the reach of the service for the customer based on the suggested menu.
+Basado en esta información, genera una sugerencia de menú, instrucciones para el personal basadas en la sugerencia de menú y el alcance del servicio para el cliente basado en la sugerencia de menú.
 
-Your output must contain the menuSuggestions, instructionsForStaff, and reachForCustomer fields.
+Tu salida debe contener los campos menuSuggestions, instructionsForStaff y reachForCustomer.
+Salida:
+{
+  "menuSuggestions": "Sugerencia de menú",
+  "instructionsForStaff": "Instrucciones para el personal",
+  "reachForCustomer": "Alcance del servicio para el cliente"
+}
+
+
 `,
 });
 
