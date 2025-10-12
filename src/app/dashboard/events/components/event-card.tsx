@@ -5,6 +5,7 @@ import { CalendarIcon, Users, Edit } from 'lucide-react';
 import type { Event } from '@/lib/types';
 import { EventForm } from './event-form';
 import { EmailGenerator } from './email-generator';
+import { DeleteEventButton } from './delete-event-button';
 
 type EventCardProps = {
   event: Event;
@@ -52,14 +53,15 @@ export function EventCard({ event }: EventCardProps) {
           <span>{event.guests} invitados</span>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-end gap-2">
-        <EmailGenerator event={event} />
-        <EventForm event={event}>
-          <Button variant="outline" size="sm">
-            <Edit className="mr-2 h-4 w-4" />
+         <CardFooter className="flex justify-end gap-2">
+          <EmailGenerator event={event} />
+           <EventForm event={event}>
+           <Button variant="outline" size="sm">
+           <Edit className="mr-2 h-4 w-4" />
             Editar
-          </Button>
-        </EventForm>
+           </Button>
+         </EventForm>
+         <DeleteEventButton eventId={event.id} eventName={event.name} />
       </CardFooter>
     </Card>
   );

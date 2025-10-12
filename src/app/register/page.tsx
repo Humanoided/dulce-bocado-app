@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const r = useRouter();
   const { toast } = useToast();
@@ -24,18 +24,21 @@ export default function LoginPage() {
 
     try {
       setLoading(true);
-      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
       const idToken = await cred.user.getIdToken();
       await fetch("/api/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken }),
       });
-      toast({ title: "Bienvenido", description: `Has iniciado sesión como ${email}` });
+      toast({ title: "Cuenta creada", description: `Has iniciado sesión como ${email}` });
       r.replace("/dashboard");
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      toast({ variant: "destructive", title: "Error", description: "Correo o contraseña incorrectos" });
+      let msg = "No se pudo crear la cuenta.";
+      if (err?.code === "auth/email-already-in-use") msg = "Ese correo ya está registrado.";
+      if (err?.code === "auth/weak-password") msg = "La contraseña es muy débil (mínimo 6 caracteres).";
+      toast({ variant: "destructive", title: "Error", description: msg });
     } finally {
       setLoading(false);
     }
@@ -46,8 +49,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <Card className="shadow-2xl">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl">DulceBocado</CardTitle>
-            <CardDescription>Inicia sesión para continuar.</CardDescription>
+            <CardTitle className="text-3xl">Crear cuenta</CardTitle>
+            <CardDescription>Regístrate para usar DulceBocado.</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={onSubmit} className="space-y-4">
@@ -60,11 +63,11 @@ export default function LoginPage() {
                 <Input id="password" name="password" type="password" required />
               </div>
               <Button className="w-full" disabled={loading} type="submit">
-                {loading ? "Iniciando..." : "Iniciar Sesión"}
+                {loading ? "Creando..." : "Registrarme"}
               </Button>
               <p className="text-center text-sm text-muted-foreground">
-                ¿No tienes cuenta?{" "}
-                <Link className="underline" href="/register">Regístrate</Link>
+                ¿Ya tienes cuenta?{" "}
+                <Link className="underline" href="/login">Inicia sesión</Link>
               </p>
             </form>
           </CardContent>

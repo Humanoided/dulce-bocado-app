@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, Timestamp } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, Timestamp, deleteDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import type { Client, Event, EventDocument } from './types';
 
@@ -68,6 +68,13 @@ export async function saveEvent(event: Omit<Event, 'id' | 'client' | 'date'> & {
   } else {
     await addDoc(collection(db, 'events'), docData);
   }
+  revalidatePath('/dashboard/events');
+  revalidatePath('/dashboard/calendar');
+  revalidatePath('/dashboard');
+}
+
+export async function deleteEvent(id: string) {
+  await deleteDoc(doc(db, 'events', id));
   revalidatePath('/dashboard/events');
   revalidatePath('/dashboard/calendar');
   revalidatePath('/dashboard');

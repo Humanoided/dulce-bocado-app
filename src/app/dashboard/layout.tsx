@@ -27,7 +27,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { DulceBocadoLogo } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
-
+import { LogoutButton } from '@/components/logoutButton'; 
 
 const navItems = [
   { href: '/dashboard', icon: Home, label: 'Resumen' },
@@ -72,19 +72,18 @@ function NavContent() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip="Cerrar Sesión">
-                <Link href="/login">
-                  <LogOut />
-                  <span>Cerrar Sesión</span>
-                </Link>
-              </SidebarMenuButton>
+            {/* ⬇️ Aquí antes había un Link a /login. Lo cambiamos por el botón real de Logout */}
+            <SidebarMenuButton asChild tooltip="Cerrar Sesión">
+              <div>
+                <LogoutButton />
+              </div>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
     </>
   );
 }
-
 
 function MobileSidebar() {
   return (
@@ -103,7 +102,6 @@ function MobileSidebar() {
     </Sheet>
   );
 }
-
 
 export default function DashboardLayout({
   children,
