@@ -47,56 +47,56 @@ export function EventForm({ children, event }: EventFormProps) {
       setDate(new Date(event.date));
     }
     async function fetchClients() {
-        const clientList = await getClients();
-        setClients(clientList);
+      const clientList = await getClients();
+      setClients(clientList);
     }
     fetchClients();
   }, [event]);
 
   const formAction = async (formData: FormData) => {
-    if(!formData.get('client')) {
-        toast({
-            variant: 'destructive',
-            title: 'Error',
-            description: 'Debes seleccionar un cliente.',
-        });
-        return;
+    if (!formData.get('client')) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Debes seleccionar un cliente.',
+      });
+      return;
     }
 
-    if(!date) {
-        toast({
-            variant: 'destructive',
-            title: 'Error',
-            description: 'Debes seleccionar una fecha.',
-        });
-        return;
+    if (!date) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Debes seleccionar una fecha.',
+      });
+      return;
     }
 
     const newEvent = {
-        id: event?.id,
-        name: formData.get('name') as string,
-        clientId: formData.get('client') as string,
-        date: date,
-        guests: Number(formData.get('guests')),
-        specialRequirements: formData.get('specialRequirements') as string,
-        paymentStatus: formData.get('paymentStatus') as Event['paymentStatus'],
-        menu: menu,
+      id: event?.id,
+      name: formData.get('name') as string,
+      clientId: formData.get('client') as string,
+      date: date,
+      guests: Number(formData.get('guests')),
+      specialRequirements: formData.get('specialRequirements') as string,
+      paymentStatus: formData.get('paymentStatus') as Event['paymentStatus'],
+      menu: menu,
     };
 
     try {
-        await saveEvent(newEvent);
-        toast({
-            title: `Evento ${event ? 'actualizado' : 'creado'}`,
-            description: `El evento "${newEvent.name}" ha sido ${event ? 'actualizado' : 'guardado'} con éxito.`,
-        });
-        router.refresh();
+      await saveEvent(newEvent);
+      toast({
+        title: `Evento ${event ? 'actualizado' : 'creado'}`,
+        description: `El evento "${newEvent.name}" ha sido ${event ? 'actualizado' : 'guardado'} con éxito.`,
+      });
+      router.refresh();
     } catch (error) {
-        console.error(error);
-        toast({
-            variant: 'destructive',
-            title: 'Error',
-            description: 'No se pudo guardar el evento. Inténtalo de nuevo.',
-        });
+      console.error(error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'No se pudo guardar el evento. Inténtalo de nuevo.',
+      });
     }
   };
 
@@ -125,50 +125,50 @@ export function EventForm({ children, event }: EventFormProps) {
                   </SelectTrigger>
                   <SelectContent>
                     {clients.length > 0 ? (
-                        clients.map(client => (
-                            <SelectItem key={client.id} value={client.id}>{client.name}</SelectItem>
-                        ))
+                      clients.map(client => (
+                        <SelectItem key={client.id} value={client.id}>{client.name}</SelectItem>
+                      ))
                     ) : (
-                        <SelectItem value="no-clients" disabled>No hay clientes creados</SelectItem>
+                      <SelectItem value="no-clients" disabled>No hay clientes creados</SelectItem>
                     )}
                   </SelectContent>
                 </Select>
               </div>
-               <div className="space-y-2">
-                  <Label htmlFor="date">Fecha del evento</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !date && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {date ? format(date, "PPP", { locale: es }) : <span>Elige una fecha</span>}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={date}
-                        onSelect={setDate}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="guests">Número de Invitados</Label>
-                  <Input id="guests" name="guests" type="number" defaultValue={event?.guests} required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="specialRequirements">Requisitos Especiales</Label>
-                  <Textarea id="specialRequirements" name="specialRequirements" defaultValue={event?.specialRequirements} />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="date">Fecha del evento</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {date ? format(date, "PPP", { locale: es }) : <span>Elige una fecha</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0">
+                    <Calendar
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="guests">Número de Invitados</Label>
+                <Input id="guests" name="guests" type="number" defaultValue={event?.guests} required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="specialRequirements">Requisitos Especiales</Label>
+                <Textarea id="specialRequirements" name="specialRequirements" defaultValue={event?.specialRequirements} />
+              </div>
 
-              <MenuSuggester event={event} onSuggestion={setMenu}/>
+              <MenuSuggester event={event} onSuggestion={setMenu} />
 
               <div className="space-y-2">
                 <Label htmlFor="paymentStatus">Estado del Pago</Label>
@@ -179,7 +179,7 @@ export function EventForm({ children, event }: EventFormProps) {
                   <SelectContent>
                     <SelectItem value="Pending">Pendiente</SelectItem>
                     <SelectItem value="Paid">Pagado</SelectItem>
-                     <SelectItem value="Overdue">Vencido</SelectItem>
+                    <SelectItem value="Overdue">Vencido</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -187,7 +187,7 @@ export function EventForm({ children, event }: EventFormProps) {
           </ScrollArea>
           <SheetFooter>
             <SheetClose asChild>
-                <Button type="submit">Guardar Cambios</Button>
+              <Button type="submit">Guardar Cambios</Button>
             </SheetClose>
           </SheetFooter>
         </form>
