@@ -38,6 +38,9 @@ export default function RegisterPage() {
       let msg = "No se pudo crear la cuenta.";
       if (err?.code === "auth/email-already-in-use") msg = "Ese correo ya está registrado.";
       if (err?.code === "auth/weak-password") msg = "La contraseña es muy débil (mínimo 6 caracteres).";
+      // Firebase throws this when the sign-in provider (Email/Password) is not enabled
+      if (err?.code === "auth/configuration-not-found")
+        msg = "El proveedor de autenticación no está configurado en Firebase. Habilita 'Email/Password' en la consola de Firebase (Authentication → Sign-in method).";
       toast({ variant: "destructive", title: "Error", description: msg });
     } finally {
       setLoading(false);
