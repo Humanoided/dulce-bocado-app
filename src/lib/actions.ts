@@ -79,3 +79,10 @@ export async function deleteEvent(id: string) {
   revalidatePath('/dashboard/calendar');
   revalidatePath('/dashboard');
 }
+
+export async function deleteClient(id: string) {
+  await deleteDoc(doc(db, 'clients', id));
+  revalidatePath('/dashboard/clients');
+  revalidatePath('/dashboard/events');
+  revalidatePath('/dashboard');
+}

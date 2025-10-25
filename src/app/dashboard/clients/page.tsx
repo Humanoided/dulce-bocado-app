@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DashboardHeader } from '@/components/dashboard-header';
 import { getClients } from '@/lib/actions';
 import { ClientForm } from './components/client-form';
+import { DeleteClientButton } from './components/delete-client-button';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,10 +45,11 @@ export default async function ClientsPage() {
                     <span>{client.phone}</span>
                   </div>
                 </div>
-                <div className="mt-4 flex justify-end">
+                <div className="mt-4 flex justify-end gap-2">
                   <ClientForm client={client}>
                       <Button variant="ghost" size="sm">Editar</Button>
                   </ClientForm>
+                  <DeleteClientButton clientId={client.id!} clientName={client.name} />
                 </div>
               </CardContent>
             </Card>

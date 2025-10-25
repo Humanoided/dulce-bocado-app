@@ -53,16 +53,16 @@ export function EventCard({ event }: EventCardProps) {
           <span>{event.guests} invitados</span>
         </div>
       </CardContent>
-         <CardFooter className="flex justify-end gap-2">
-          <EmailGenerator event={event} />
-           <EventForm event={event}>
-           <Button variant="outline" size="sm">
-           <Edit className="mr-2 h-4 w-4" />
-            Editar
-           </Button>
-         </EventForm>
-         <DeleteEventButton eventId={event.id} eventName={event.name} />
-      </CardFooter>
+      <CardFooter className="flex flex-wrap items-center justify-end gap-2">
+       <EmailGenerator event={event} />
+        <EventForm event={event}>
+        <Button variant="outline" size="sm">
+        <Edit className="mr-2 h-4 w-4" />
+        <span className="hidden sm:inline">Editar</span>
+        </Button>
+      </EventForm>
+      <DeleteEventButton eventId={event.id} eventName={event.name} />
+    </CardFooter>
     </Card>
   );
 }

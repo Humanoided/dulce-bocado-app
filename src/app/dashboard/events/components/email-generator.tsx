@@ -62,10 +62,10 @@ export function EmailGenerator({ event }: EmailGeneratorProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
+        <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
           <Mail className="mr-2 h-4 w-4" />
-          Email
+          <span className="hidden sm:inline">Email</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[625px]">
